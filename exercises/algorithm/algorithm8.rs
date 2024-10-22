@@ -2,7 +2,6 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -38,7 +37,11 @@ impl<T> Queue<T> {
     pub fn size(&self) -> usize {
         self.elements.len()
     }
-
+    pub fn clear(&mut self) {
+        while !self.is_empty(){
+            self.elements.pop();
+        }
+    }
     pub fn is_empty(&self) -> bool {
         self.elements.is_empty()
     }
@@ -52,9 +55,12 @@ impl<T> Default for Queue<T> {
     }
 }
 
+// 基于两个队列的栈 (myStack)，我们需要设计一种机制来保证最后进入队列的元素能够最先被弹出
+#[derive(Debug)]
 pub struct myStack<T>
 {
 	//TODO
+    top :Option<usize>,
 	q1:Queue<T>,
 	q2:Queue<T>
 }
@@ -62,20 +68,38 @@ impl<T> myStack<T> {
     pub fn new() -> Self {
         Self {
 			//TODO
+            top:None,
 			q1:Queue::<T>::new(),
 			q2:Queue::<T>::new()
         }
     }
+    
     pub fn push(&mut self, elem: T) {
-        //TODO
+        if let Some(a) = self.top{
+            self.top=Some(a-1);
+        };
+        std::mem::swap(&mut self.q1, &mut self.q2);
+        self.q1.enqueue(elem);
+        while !self.q2.is_empty(){
+            match self.q2.dequeue(){
+                Ok(a) =>self.q1.enqueue(a),
+                _other => (),
+            }
+
+        } 
     }
+
     pub fn pop(&mut self) -> Result<T, &str> {
-        //TODO
-		Err("Stack is empty")
+        if self.q1.is_empty() {return Err("Stack is empty");}
+        if let Some(a) = self.top{
+        self.top=Some(a-1);
+
+        };
+        self.q1.dequeue()
     }
+
     pub fn is_empty(&self) -> bool {
-		//TODO
-        true
+        self.q1.is_empty()
     }
 }
 
@@ -90,6 +114,7 @@ mod tests {
         s.push(1);
         s.push(2);
         s.push(3);
+        println!("{:?}", s);
         assert_eq!(s.pop(), Ok(3));
         assert_eq!(s.pop(), Ok(2));
         s.push(4);

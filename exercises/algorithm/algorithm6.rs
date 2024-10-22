@@ -3,9 +3,8 @@
 	This problem requires you to implement a basic DFS traversal
 */
 
-// I AM NOT DONE
 use std::collections::HashSet;
-
+use std::collections::VecDeque;
 struct Graph {
     adj: Vec<Vec<usize>>, 
 }
@@ -21,9 +20,36 @@ impl Graph {
         self.adj[src].push(dest);
         self.adj[dest].push(src); 
     }
-
+    // 这里AI使用了HashSet,访问逻辑存在区别
+    // 对于v节点的数据进行访问,并且若邻居未访问,则递归访问
     fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
         //TODO
+        // AI给的结果:
+        // 标记当前节点为已访问
+        visited.insert(v);
+        // 将当前节点添加到访问顺序中
+        visit_order.push(v);
+        // 遍历当前节点的所有邻居
+        for &neighbor in &self.adj[v] {
+            // 如果邻居尚未访问，则递归访问
+            if !visited.contains(&neighbor) {
+                self.dfs_util(neighbor, visited, visit_order);
+            }
+        }
+        // 这里我没用hashset,然后竟然也过了,奇怪
+        // let mut vbool = vec![false;self.adj.len()];
+        // let mut queue = VecDeque::new();
+        // queue.push_back(v);
+        // vbool[v] = true;
+        // while let Some(current) = queue.pop_front(){
+        //     visit_order.push(current);
+        //     for neighbor in &self.adj[current] {
+        //         if !vbool[*neighbor] {
+        //             queue.push_back(*neighbor);
+        //             vbool[*neighbor] = true;
+        //         }
+        //     }
+        // }
     }
 
     // Perform a depth-first search on the graph, return the order of visited nodes

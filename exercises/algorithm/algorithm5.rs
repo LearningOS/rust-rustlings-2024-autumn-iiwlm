@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
@@ -18,21 +17,44 @@ impl Graph {
             adj: vec![vec![]; n],
         }
     }
-
     // Add an edge to the graph
     fn add_edge(&mut self, src: usize, dest: usize) {
         self.adj[src].push(dest); 
         self.adj[dest].push(src); 
     }
-
-    // Perform a breadth-first search on the graph, return the order of visited nodes
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
-        
-		//TODO
-
-        let mut visit_order = vec![];
+        let mut visit_order = Vec::new();
+        let mut queue = VecDeque::new();
+        let mut visited = vec![false; self.adj.len()];
+        // Start with the initial node
+        queue.push_back(start);
+        visited[start] = true;
+        // 从start开始寻找
+        // 这个while let.....
+        // 画了一个图，容易理解多了
+        while let Some(current) = queue.pop_front() {
+            visit_order.push(current);
+            for neighbor in &self.adj[current] {
+                if !visited[*neighbor] {
+                    queue.push_back(*neighbor);
+                    visited[*neighbor] = true;
+                }
+            }
+        }
         visit_order
     }
+    // Perform a breadth-first search on the graph, return the order of visited nodes
+    // fn bfs_with_return(&self, start: usize) -> Vec<usize> {
+    //     let mut visit_order = vec![];
+    //     visit_order.push(start);
+    //     // 遍历每一个节点,看他们可以到达哪里
+    //     for i in 0..start{
+    //             if self.adj[i][0] == start{
+    //                 visit_order.push(i);
+    //             }
+    //     }
+    //     visit_order
+    // }
 }
 
 
@@ -60,7 +82,7 @@ mod tests {
         let mut graph = Graph::new(3);
         graph.add_edge(0, 1);
         graph.add_edge(1, 2);
-
+        
         let visited_order = graph.bfs_with_return(2);
         assert_eq!(visited_order, vec![2, 1, 0]);
     }

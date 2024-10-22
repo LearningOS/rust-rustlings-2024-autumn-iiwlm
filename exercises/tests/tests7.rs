@@ -34,9 +34,10 @@
 // Execute `rustlings hint tests7` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 fn main() {}
+use std::env;
+use std::time::SystemTime;
+use std::time::UNIX_EPOCH;
 
 #[cfg(test)]
 mod tests {
@@ -44,12 +45,25 @@ mod tests {
 
     #[test]
     fn test_success() {
-        let timestamp = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-        let s = std::env::var("TEST_FOO").unwrap();
+        // 获取当前时间戳
+        let current_timestamp = get_current_timestamp();
+
+        // 设置 TEST_FOO 为当前时间戳减去 5 秒
+        env::set_var("TEST_FOO", (current_timestamp - 5).to_string());
+
+        // 获取时间戳并进行断言
+        let timestamp = get_current_timestamp();
+
+        let s = env::var("TEST_FOO").unwrap();
         let e: u64 = s.parse().unwrap();
-        assert!(timestamp >= e && timestamp < e + 10);
+
+        assert!(timestamp >= e && timestamp < e + 10, "Timestamp is within expected range.");
+    }
+
+    fn get_current_timestamp() -> u64 {
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
     }
 }

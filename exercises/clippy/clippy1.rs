@@ -9,7 +9,6 @@
 // Execute `rustlings hint clippy1` or use the `hint` watch subcommand for a
 // hint.
 fn main() {
-    // 使用标准库提供的 PI 常量
     let pi = std::f32::consts::PI;
     let radius = 5.0f32;
 

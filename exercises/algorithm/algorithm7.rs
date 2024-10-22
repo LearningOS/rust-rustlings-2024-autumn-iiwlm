@@ -2,8 +2,6 @@
 	stack
 	This question requires you to use a stack to achieve a bracket match
 */
-
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -30,9 +28,16 @@ impl<T> Stack<T> {
 		self.data.push(val);
 		self.size += 1;
 	}
+	// if let 活学活用,没用好
+	// 但是对于pop的实现方法,他使用了unsafe获取地址实现
 	fn pop(&mut self) -> Option<T> {
 		// TODO
-		None
+		if self.size > 0 {
+            self.size -= 1;
+            self.data.pop()
+        } else {
+            None
+        }
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -101,8 +106,89 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
-	true
+
+
+	//3. 使用双向链表
+	// use std::collections::VecDeque;
+    // let mut stack = VecDeque::new();
+    // for c in bracket.chars() {
+    //     match c {
+    //         '(' | '[' | '{' => stack.push_back(c),
+    //         ')' => {
+    //             if stack.pop_back() != Some('(') {
+    //                 return false;
+    //             }
+    //         },
+    //         ']' => {
+    //             if stack.pop_back() != Some('[') {
+    //                 return false;
+    //             }
+    //         },
+    //         '}' => {
+    //             if stack.pop_back() != Some('{') {
+    //                 return false;
+    //             }
+    //         },
+    //         _ => {} // 忽略其他字符
+    //     }
+    // }
+    // stack.is_empty()
+
+	// 2.对于你的实现进行改进:对于后半部分直接匹配,不进行入栈
+	let mut stack = Vec::new();
+    for c in bracket.chars() {
+        match c {
+            '(' | '[' | '{' => stack.push(c),
+            ')' => {
+                if stack.pop() != Some('(') {
+                    return false;
+                }
+            },
+            ']' => {
+                if stack.pop() != Some('[') {
+                    return false;
+                }
+            },
+            '}' => {
+                if stack.pop() != Some('{') {
+                    return false;
+                }
+            },
+            _ => {} // 忽略其他字符
+        }
+    }
+    stack.is_empty()
+	//1. 嵌套就不能实现功能了TODO{([])}
+	// if bracket.is_empty(){
+	// 	return true;
+	// }
+	// let front = ['[','(','{'];
+	// let back= [']',')','}'];
+	// let mut stack_front = Stack::new();
+	// let mut stack_back = Stack::new();
+	// for i in bracket.chars(){
+	// 	if front.contains(&i){
+	// 		stack_front.push(i);
+	// 	}
+	// 	if back.contains(&i){
+	// 		stack_back.push(i);
+	// 	}
+	// }
+	// if stack_front.size != stack_back.size{
+	// 	return false;
+	// }
+	// loop{
+	// 	let Some(back) = stack_back.pop()else{break;};
+	// 	match stack_front.pop(){
+	// 		None=>break,
+	// 		Some(a) => {
+	// 			if a == '(' { if back != ')' {return false;} }
+	// 			else if a == '[' { if back != ']'{return false;} }
+	// 			else{ if back != '}'{return false;}}
+	// 		}
+	// 	}
+	// }
+	// true
 }
 
 #[cfg(test)]

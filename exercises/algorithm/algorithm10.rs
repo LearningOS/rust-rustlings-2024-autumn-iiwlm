@@ -1,9 +1,7 @@
 /*
-	graph
+	graph图
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
-
 use std::collections::{HashMap, HashSet};
 use std::fmt;
 #[derive(Debug, Clone)]
@@ -28,8 +26,21 @@ impl Graph for UndirectedGraph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>> {
         &self.adjacency_table
     }
+
+    // Hash：entry
+    // 这里要实现的功能你其实很清楚，但是你写不出来，注意这个Hash的函数的用处
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        // self.adjacency_table.insert(edge.0.to_string(),(edge.1.to_string(),edge.2))
+        let (src, dest, weight) = edge;
+
+        // 更新 src 节点的邻接表
+        let src_entry = self.adjacency_table.entry(src.to_string()).or_insert(Vec::new());
+        src_entry.push((dest.to_string(), weight));
+
+        // 更新 dest 节点的邻接表
+        let dest_entry = self.adjacency_table.entry(dest.to_string()).or_insert(Vec::new());
+        dest_entry.push((src.to_string(), weight));
     }
 }
 pub trait Graph {
@@ -40,9 +51,13 @@ pub trait Graph {
         //TODO
 		true
     }
-    fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+    // 这样写就可以了
+    // fn add_edge(&mut self, edge: (&str, &str, i32));
+    fn add_edge(&mut self, edge: (&str, &str, i32))
+    {
+        // todo
     }
+
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
     }
